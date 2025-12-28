@@ -4,38 +4,152 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rounded Square Boundary</title>
+
 <style>
-  body, html {
+body, html {
     margin: 0;
     padding: 0;
     height: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f7f7f7; /* optional background */
-  }
+    justify-content: flex-end; /* right side fixed */
+    align-items: flex-end;     /* bottom fixed */
+    background-color: #f7f7f7;
+}
 
-  .rounded-square {
-    width: 92vw;              /* almost full width */
-    height: 92vh;             /* almost full height */
-    border: 2.25px solid #d2d4d2;   /* border thickness and color */
-    border-radius: 20px;      /* round corners */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;   /* includes border in size */
-    background-color: #f7f7f7;   /* optional inside color */
-    margin-top: 50px;  /* up/down */
-    margin-left: 100px /* left/right */
-  }
+/* OUTER FRAME */
+.outermargins {
+    width: 95vw;
+    height: 91vh;
+    border: 2px solid #e6e6e6;
+    border-radius: 20px;
+    background-color: #f7f7f7;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    position: relative;
+    box-sizing: border-box;
+    transition: width 0.25s ease;
+}
+
+/* Expanded state */
+.outermargins.expanded {
+    width: 85vw;
+}
+
+/* BOOSTER FRAME — FIXED TO SCREEN */
+.boosterframe {
+    width: 225px;
+    height: 45px;
+    border: 2.25px solid #e6e6e6;
+    border-radius: 15px;
+    background-color: transparent;
+    position: fixed;
+    top: 12px;
+    right: 90px;
+    box-sizing: border-box;
+}
+
+/* SEPARATOR — FIXED */
+.boosterframe-seperator {
+    width: 1px;
+    height: 45px;
+    background-color: #e6e6e6;
+    position: fixed;
+    top: 12px;
+    right: 155px;
+}
+
+/* BUTTON */
+#toggleOuter {
+    position: absolute;
+    bottom: 666px;
+    left: 20px;
+    padding: 8px 11.5px;
+    border-radius: 8px;
+    border: 0px solid #ccc;
+    background: transparent;
+    cursor: pointer;
+    z-index: 1; /* make sure it's above the overlay */
+    transition: transform 0.4s ease;
+}
+
+/* Pseudo-element for the background frame */
+#toggleOuter::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    background: rgba(0, 0, 0, 0.1); /* transparent dark */
+    border-radius: 12px;
+    opacity: 0;           /* hidden by default */
+    transition: opacity 0.2s;
+    z-index: -1;
+}
+
+/* Show the frame on hover */
+#toggleOuter:hover::before {
+    opacity: 1;
+}
+
+/* SPIN ANIMATIONS */
+@keyframes spin-clockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-counter {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.spin-cw {
+  animation: spin-clockwise 0.4s linear;
+}
+
+.spin-ccw {
+  animation: spin-counter 0.4s linear;
+}
 </style>
 </head>
+
 <body>
 
-<div class="rounded-square">
-  <!-- Your content goes here -->
-  <p></p>
+<!-- FIXED BOOSTER -->
+<div class="boosterframe"></div>
+<div class="boosterframe-seperator"></div>
+
+<!-- RESIZABLE OUTER FRAME -->
+<div class="outermargins" id="outer">
+    <button id="toggleOuter">▶</button> <!-- starts collapsed -->
 </div>
+
+<script>
+const btn = document.getElementById("toggleOuter");
+const outer = document.getElementById("outer");
+
+btn.addEventListener("click", () => {
+    // Toggle the outer frame
+    outer.classList.toggle("expanded");
+
+    // Remove any previous spin classes
+    btn.classList.remove("spin-cw", "spin-ccw");
+
+    // Update arrow and spin direction
+    if (outer.classList.contains("expanded")) {
+        btn.textContent = "◀";  // now points left
+        btn.classList.add("spin-cw");
+    } else {
+        btn.textContent = "▶";  // points right
+        btn.classList.add("spin-ccw");
+    }
+
+    // Remove spin class after animation
+    setTimeout(() => {
+        btn.classList.remove("spin-cw", "spin-ccw");
+    }, 400);
+});
+</script>
 
 </body>
 </html>
