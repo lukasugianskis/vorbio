@@ -68,8 +68,7 @@ body, html {
     border: 0px solid #ccc;
     background: transparent;
     cursor: pointer;
-    z-index: 1; /* make sure it's above the overlay */
-    transition: transform 0.4s ease;
+    z-index: 1;
 }
 
 /* Pseudo-element for the background frame */
@@ -80,16 +79,21 @@ body, html {
     left: -5px;
     width: calc(100% + 10px);
     height: calc(100% + 10px);
-    background: rgba(0, 0, 0, 0.1); /* transparent dark */
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 12px;
-    opacity: 0;           /* hidden by default */
+    opacity: 0;
     transition: opacity 0.2s;
     z-index: -1;
 }
 
-/* Show the frame on hover */
 #toggleOuter:hover::before {
     opacity: 1;
+}
+
+/* SVG ICON rotation */
+#toggleIcon {
+    transition: transform 0.4s ease;
+    display: block;
 }
 
 /* SPIN ANIMATIONS */
@@ -121,32 +125,33 @@ body, html {
 
 <!-- RESIZABLE OUTER FRAME -->
 <div class="outermargins" id="outer">
-    <button id="toggleOuter">▶</button> <!-- starts collapsed -->
+    <button id="toggleOuter">
+        <img id="toggleIcon" src="sidebar.svg" width="16" height="16" alt="Toggle">
+    </button>
 </div>
 
 <script>
 const btn = document.getElementById("toggleOuter");
 const outer = document.getElementById("outer");
+const icon = document.getElementById("toggleIcon");
 
 btn.addEventListener("click", () => {
     // Toggle the outer frame
     outer.classList.toggle("expanded");
 
-    // Remove any previous spin classes
-    btn.classList.remove("spin-cw", "spin-ccw");
+    // Remove previous spin classes
+    icon.classList.remove("spin-cw", "spin-ccw");
 
-    // Update arrow and spin direction
+    // Apply spin based on direction
     if (outer.classList.contains("expanded")) {
-        btn.textContent = "◀";  // now points left
-        btn.classList.add("spin-cw");
+        icon.classList.add("spin-cw");  // rotates clockwise
     } else {
-        btn.textContent = "▶";  // points right
-        btn.classList.add("spin-ccw");
+        icon.classList.add("spin-ccw"); // rotates counterclockwise
     }
 
-    // Remove spin class after animation
+    // Remove class after animation so it can spin again
     setTimeout(() => {
-        btn.classList.remove("spin-cw", "spin-ccw");
+        icon.classList.remove("spin-cw", "spin-ccw");
     }, 400);
 });
 </script>
